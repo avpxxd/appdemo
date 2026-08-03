@@ -1,1 +1,358 @@
-<p>Demo Search Page</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absurdity OS - Futile Search</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'dashboard-bg': '#0f172a',
+                        'card-bg': '#1e293b',
+                        'accent-primary': '#8b5cf6',
+                        'accent-secondary': '#10b981',
+                        'accent-warning': '#f59e0b',
+                        'accent-danger': '#ef4444',
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'sans-serif'],
+                        'mono': ['Fira Code', 'monospace'],
+                    },
+                    animation: {
+                        'spin-slow': 'spin 3s linear infinite',
+                        'pulse-fast': 'pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            background-color: theme('colors.dashboard-bg');
+            color: #e2e8f0;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body::-webkit-scrollbar {
+            display: none;
+        }
+
+        .search-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px theme('colors.accent-primary/50');
+        }
+
+        /* Loading Skeleton Animation */
+        .skeleton {
+            background: linear-gradient(90deg, theme('colors.card-bg') 25%, #334155 50%, theme('colors.card-bg') 75%);
+            background-size: 200% 100%;
+            animation: loading-skeleton 1.5s infinite;
+        }
+
+        @keyframes loading-skeleton {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
+</head>
+<body class="p-4 flex flex-col min-h-screen">
+
+    <!-- Header / Mascot -->
+    <div class="flex flex-col items-center justify-center pt-8 pb-6 text-center">
+        <div class="relative w-16 h-16 mb-4">
+            <div class="absolute inset-0 bg-accent-primary/20 rounded-full blur-xl animate-pulse"></div>
+            <i class="fa-solid fa-magnifying-glass-chart text-4xl text-accent-primary relative z-10 animate-bounce" style="animation-duration: 2s;"></i>
+            <i class="fa-solid fa-ban text-accent-danger text-2xl absolute -bottom-2 -right-2 z-20 transform rotate-12"></i>
+        </div>
+        <h1 class="text-2xl font-bold text-white tracking-tight">Vōid Search</h1>
+        <p class="text-xs text-slate-400 mt-1 font-mono">We probably don't have it.</p>
+    </div>
+
+    <!-- Search Box Area -->
+    <div class="w-full relative z-50">
+        <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <i class="fa-solid fa-magnifying-glass text-slate-400" id="search-icon"></i>
+            </div>
+            <input 
+                type="text" 
+                id="search-input" 
+                class="search-input w-full bg-slate-800/80 border border-slate-600 text-white rounded-2xl py-3 pl-10 pr-12 placeholder-slate-500 transition-all focus:bg-slate-800"
+                placeholder="Search for meaning, or pizza..."
+                autocomplete="off"
+            >
+            <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                <button id="clear-btn" class="p-1 text-slate-500 hover:text-white hidden">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                <div id="loading-spinner" class="hidden">
+                    <i class="fa-solid fa-circle-notch text-accent-primary animate-spin"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Autocomplete Dropdown -->
+        <div id="autocomplete-dropdown" class="absolute w-full mt-2 bg-slate-800 border border-slate-700 rounded-xl shadow-2xl overflow-hidden hidden transform transition-all origin-top">
+            <ul id="suggestion-list" class="max-h-60 overflow-y-auto overscroll-contain">
+                <!-- Suggestions injected here -->
+            </ul>
+        </div>
+    </div>
+
+    <!-- Fake Loading State (Initially Hidden) -->
+    <div id="fake-loading" class="mt-8 space-y-4 hidden flex-grow">
+        <div class="flex items-center space-x-2 text-xs text-slate-400 mb-6 justify-center">
+            <i class="fa-solid fa-gear animate-spin-slow"></i>
+            <span>Consulting the oracle...</span>
+        </div>
+        
+        <!-- Skeleton Result 1 -->
+        <div class="p-4 rounded-xl border border-slate-800 bg-card-bg/50">
+            <div class="h-4 w-3/4 skeleton rounded mb-2"></div>
+            <div class="h-3 w-full skeleton rounded mb-1.5 opacity-60"></div>
+            <div class="h-3 w-5/6 skeleton rounded opacity-60"></div>
+        </div>
+        <!-- Skeleton Result 2 -->
+        <div class="p-4 rounded-xl border border-slate-800 bg-card-bg/50">
+            <div class="h-4 w-1/2 skeleton rounded mb-2"></div>
+            <div class="h-3 w-full skeleton rounded mb-1.5 opacity-60"></div>
+            <div class="h-3 w-4/5 skeleton rounded opacity-60"></div>
+        </div>
+    </div>
+
+    <!-- No Results State (Initially Hidden) -->
+    <div id="no-results-state" class="mt-12 flex-col items-center justify-center text-center hidden flex-grow px-4 pb-10">
+        <div class="w-24 h-24 bg-slate-800 rounded-full flex items-center justify-center mb-6 mx-auto border-4 border-dashed border-slate-700">
+            <i class="fa-solid fa-ghost text-4xl text-slate-500 opacity-50 mb-1 ml-1 animate-pulse-fast"></i>
+        </div>
+        
+        <h2 class="text-xl font-bold text-white mb-2">Absolutely Nothing Found</h2>
+        
+        <div class="bg-card-bg border border-slate-700 p-4 rounded-xl text-left w-full max-w-sm mx-auto shadow-lg mt-4 relative overflow-hidden">
+             <!-- Tape decorative element -->
+            <div class="absolute -top-2 -right-4 bg-yellow-600/30 w-16 h-6 transform rotate-45"></div>
+            
+            <p class="text-sm text-slate-300 mb-3">Your search for <span id="failed-query-display" class="font-mono text-accent-danger font-bold break-all">"..."</span> yielded exactly 0 documents, 0 images, and 0 fragments of hope.</p>
+            
+            <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider mb-2 border-b border-slate-700 pb-1">Unhelpful Suggestions:</p>
+            <ul class="text-sm text-slate-400 space-y-2 list-disc pl-4">
+                <li>Make sure all words are spelled incorrectly.</li>
+                <li>Try different, more vague keywords.</li>
+                <li>Lower your expectations significantly.</li>
+                <li>Close the app and go for a walk.</li>
+            </ul>
+        </div>
+        
+        <!-- Sarcastic Stats -->
+        <div class="flex justify-center gap-6 mt-8 text-xs text-slate-500 font-mono">
+             <div class="text-center">
+                 <div class="text-white">0.42s</div>
+                 <div>Time Wasted</div>
+             </div>
+             <div class="w-px bg-slate-700"></div>
+             <div class="text-center">
+                 <div class="text-white">∞</div
+                 <div>Disappointment</div>
+             </div>
+        </div>
+    </div>
+
+    <!-- JSONP Callback function for Google Autocomplete -->
+    <script>
+        let currentSuggestions = [];
+        
+        // This function is called by the JSONP script injected into the head
+        function handleGoogleAutocomplete(data) {
+            const dropdown = document.getElementById('autocomplete-dropdown');
+            const suggestionList = document.getElementById('suggestion-list');
+            const loadingSpinner = document.getElementById('loading-spinner');
+            const clearBtn = document.getElementById('clear-btn');
+            
+            loadingSpinner.classList.add('hidden');
+            clearBtn.classList.remove('hidden');
+
+            suggestionList.innerHTML = '';
+            
+            // data[1] contains the array of suggestions from Google
+            if (data && data[1] && data[1].length > 0) {
+                currentSuggestions = data[1].map(item => item[0]);
+                
+                // Build list items
+                currentSuggestions.forEach(suggestion => {
+                    const li = document.createElement('li');
+                    li.className = 'px-4 py-3 hover:bg-slate-700 border-b border-slate-700/50 cursor-pointer flex items-center text-slate-300 last:border-0 transition-colors';
+                    
+                    // Highlight the typed part
+                    const typedText = document.getElementById('search-input').value.toLowerCase();
+                    const boldPart = suggestion.substring(0, typedText.length);
+                    const normalPart = suggestion.substring(typedText.length);
+                    
+                    li.innerHTML = `
+                        <i class="fa-solid fa-clock-rotate-left text-slate-500 mr-3 text-xs"></i>
+                        <span class="truncate">
+                            <strong class="text-white font-medium">${boldPart}</strong>${normalPart}
+                        </span>
+                    `;
+                    
+                    // Click handler to trigger fake search
+                    li.addEventListener('click', () => {
+                        document.getElementById('search-input').value = suggestion;
+                        triggerFakeSearch(suggestion);
+                    });
+                    
+                    suggestionList.appendChild(li);
+                });
+                
+                dropdown.classList.remove('hidden');
+            } else {
+                dropdown.classList.add('hidden');
+            }
+        }
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const input = document.getElementById('search-input');
+            const dropdown = document.getElementById('autocomplete-dropdown');
+            const clearBtn = document.getElementById('clear-btn');
+            const loadingSpinner = document.getElementById('loading-spinner');
+            
+            const fakeLoading = document.getElementById('fake-loading');
+            const noResultsState = document.getElementById('no-results-state');
+            const failedQueryDisplay = document.getElementById('failed-query-display');
+            const searchIcon = document.getElementById('search-icon');
+
+            let debounceTimer;
+            let currentScript = null;
+
+            // Handle Input for Autocomplete
+            input.addEventListener('input', (e) => {
+                const query = e.target.value.trim();
+                
+                // Hide states when typing new stuff
+                fakeLoading.classList.add('hidden');
+                noResultsState.classList.add('hidden');
+                searchIcon.className = 'fa-solid fa-magnifying-glass text-slate-400';
+
+                if (query.length === 0) {
+                    dropdown.classList.add('hidden');
+                    clearBtn.classList.add('hidden');
+                    loadingSpinner.classList.add('hidden');
+                    return;
+                }
+
+                // Show loading indicator in input
+                clearBtn.classList.add('hidden');
+                loadingSpinner.classList.remove('hidden');
+
+                clearTimeout(debounceTimer);
+                
+                // Debounce API calls
+                debounceTimer = setTimeout(() => {
+                    fetchSuggestions(query);
+                }, 300); // 300ms delay
+            });
+
+            // Handle Enter key
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if(input.value.trim().length > 0) {
+                        triggerFakeSearch(input.value);
+                    }
+                }
+            });
+
+            // Clear Button
+            clearBtn.addEventListener('click', () => {
+                input.value = '';
+                input.focus();
+                dropdown.classList.add('hidden');
+                clearBtn.classList.add('hidden');
+                fakeLoading.classList.add('hidden');
+                noResultsState.classList.add('hidden');
+                searchIcon.className = 'fa-solid fa-magnifying-glass text-slate-400';
+            });
+
+            // Hide dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+                    dropdown.classList.add('hidden');
+                }
+            });
+            
+            // Re-show dropdown on input focus if there are suggestions and input is not empty
+            input.addEventListener('focus', () => {
+                 if (input.value.trim().length > 0 && document.getElementById('suggestion-list').children.length > 0) {
+                     dropdown.classList.remove('hidden');
+                 }
+            });
+
+            // --- The Fake Search Execution ---
+            window.triggerFakeSearch = function(query) {
+                input.blur(); // Hide keyboard on mobile
+                dropdown.classList.add('hidden');
+                
+                // Show skeleton loading
+                fakeLoading.classList.remove('hidden');
+                noResultsState.classList.add('hidden');
+                
+                // Update icon to look busy
+                searchIcon.className = 'fa-solid fa-hourglass-half text-accent-primary animate-pulse';
+
+                // Random delay between 1.5 and 3 seconds to simulate "searching"
+                const searchTime = Math.floor(Math.random() * 1500) + 1500;
+
+                setTimeout(() => {
+                    // Hide loading, show NO RESULTS
+                    fakeLoading.classList.add('hidden');
+                    noResultsState.classList.remove('hidden');
+                    noResultsState.classList.add('flex');
+                    
+                    // Update error text
+                    failedQueryDisplay.textContent = `"${query}"`;
+                    
+                    // Reset icon to sad state
+                    searchIcon.className = 'fa-solid fa-magnifying-glass-minus text-slate-500';
+                    
+                }, searchTime);
+            }
+
+            // --- Fetching Google Autocomplete via JSONP ---
+            function fetchSuggestions(query) {
+                // Remove old script if exists
+                if (currentScript) {
+                    document.head.removeChild(currentScript);
+                }
+
+                // Create new script tag for JSONP
+                // Using Google's unofficial suggest API. 'client=youtube' or 'client=chrome' usually work well for generic terms without needing auth.
+                // We pass 'handleGoogleAutocomplete' as the callback function name
+                currentScript = document.createElement('script');
+                currentScript.src = `https://suggestqueries.google.com/complete/search?client=youtube&q=${encodeURIComponent(query)}&jsonp=handleGoogleAutocomplete`;
+                
+                // Error handling in case the network fails or script is blocked
+                currentScript.onerror = () => {
+                    loadingSpinner.classList.add('hidden');
+                    clearBtn.classList.remove('hidden');
+                    // Fallback to fake suggestions if API fails
+                    handleGoogleAutocomplete([query, [
+                        [`${query} meaning`],
+                        [`why does ${query} exist`],
+                        [`${query} alternative`]
+                    ]]);
+                };
+
+                document.head.appendChild(currentScript);
+            }
+        });
+    </script>
+</body>
+</html>
