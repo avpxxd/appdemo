@@ -6,6 +6,7 @@
     <title>Absurdity OS - More Options</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <script>
         tailwind.config = {
             theme: {
@@ -25,7 +26,7 @@
                     },
                     animation: {
                         'shake': 'shake 0.5s cubic-bezier(.36,.07,.19,.97) both',
-                        'slide-up': 'slideUp 0.3s ease-out forwards',
+                        'slide-down': 'slideDown 0.3s ease-out forwards', /* Changed to slide-down */
                         'fade-out': 'fadeOut 0.5s ease-in forwards',
                     },
                     keyframes: {
@@ -35,8 +36,8 @@
                             '30%, 50%, 70%': { transform: 'translate3d(-4px, 0, 0)' },
                             '40%, 60%': { transform: 'translate3d(4px, 0, 0)' }
                         },
-                        slideUp: {
-                            '0%': { transform: 'translateY(100%)', opacity: '0' },
+                        slideDown: { /* Updated to animate from top */
+                            '0%': { transform: 'translateY(-100%)', opacity: '0' },
                             '100%': { transform: 'translateY(0)', opacity: '1' }
                         },
                         fadeOut: {
@@ -72,7 +73,6 @@
             transition: opacity 1s ease;
         }
 
-        /* List Item Styling */
         .list-group {
             background-color: #1e293b;
             border-radius: 1rem;
@@ -110,10 +110,9 @@
             margin-right: 12px;
         }
 
-        /* Toast Notification System */
         #toast-container {
             position: fixed;
-            bottom: 20px;
+            top: 20px; /* Moved to top so keyboard doesn't hide it */
             left: 50%;
             transform: translateX(-50%);
             z-index: 1000;
@@ -164,6 +163,7 @@
             </div>
             <i class="fa-solid fa-chevron-right text-slate-500 text-sm"></i>
         </div>
+        
         <!-- RAM Progress Bar (Hidden initially) -->
         <div id="ram-progress-container" class="hidden px-4 py-4 bg-slate-800 border-b border-slate-700/50">
             <div class="flex justify-between text-xs font-mono text-blue-300 mb-2">
@@ -309,7 +309,8 @@
                     iconColor = 'text-accent-warning';
                 }
 
-                toast.className = `toast animate-slide-up ${borderColor}`;
+                // Changed animation class from animate-slide-up to animate-slide-down
+                toast.className = `toast animate-slide-down ${borderColor}`;
                 toast.innerHTML = `
                     <i class="fa-solid ${icon} ${iconColor} text-lg"></i>
                     <span class="flex-1 font-medium">${message}</span>
@@ -319,7 +320,7 @@
                 
                 // Remove toast after 3 seconds
                 setTimeout(() => {
-                    toast.classList.remove('animate-slide-up');
+                    toast.classList.remove('animate-slide-down'); // Removed down animation
                     toast.classList.add('animate-fade-out');
                     setTimeout(() => toast.remove(), 500);
                 }, 3000);
@@ -448,6 +449,26 @@
             const submitPin = document.getElementById('submit-pin');
             const pinInputs = document.querySelectorAll('.pin-input');
 
+            // Define Easter Eggs
+            const easterEggs = {
+                "0824": "Hello, Dalton!",
+                "0823": "Hello, creator.",
+                "1008": "Hi Will!",
+                "0000": "how very unsecure of you.",
+                "1234": "you really thought that would work, huh.",
+                "6969": "nice!",
+                "6767": "disgusting.",
+                "8888": "eight!",
+                "2001": "here comes the airplane!",
+                "2077": "cyberpunk cybersecurity!",
+                "8675": "three oh niiiine!",
+                "0404": "not found :/",
+                "9001": "it's over 9000!",
+                "1337": "no.",
+                "2600": "Atari!",
+                "8008": "that's inappropriate."
+            };
+
             btnReset.addEventListener('click', () => {
                 pinModal.classList.remove('hidden');
                 setTimeout(() => pinModalContent.classList.remove('scale-95'), 10);
@@ -498,7 +519,12 @@
                 pinInputs.forEach(i => i.value = '');
                 pinInputs[0].focus();
                 
-                showToast("Incorrect PIN. You are stuck as you are.", "fa-circle-xmark", "danger");
+                // Check for Easter Eggs
+                if (easterEggs[pin]) {
+                    showToast(easterEggs[pin], "fa-ghost", "primary");
+                } else {
+                    showToast("Incorrect PIN. You are stuck as you are.", "fa-circle-xmark", "danger");
+                }
             });
         });
     </script>
