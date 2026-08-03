@@ -1,1 +1,506 @@
-<p>Demo Account Page</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absurdity OS - More Options</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'dashboard-bg': '#0f172a',
+                        'card-bg': '#1e293b',
+                        'accent-primary': '#8b5cf6',
+                        'accent-secondary': '#10b981',
+                        'accent-warning': '#f59e0b',
+                        'accent-danger': '#ef4444',
+                        'list-hover': '#334155',
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'sans-serif'],
+                        'mono': ['Fira Code', 'monospace'],
+                    },
+                    animation: {
+                        'shake': 'shake 0.5s cubic-bezier(.36,.07,.19,.97) both',
+                        'slide-up': 'slideUp 0.3s ease-out forwards',
+                        'fade-out': 'fadeOut 0.5s ease-in forwards',
+                    },
+                    keyframes: {
+                        shake: {
+                            '10%, 90%': { transform: 'translate3d(-1px, 0, 0)' },
+                            '20%, 80%': { transform: 'translate3d(2px, 0, 0)' },
+                            '30%, 50%, 70%': { transform: 'translate3d(-4px, 0, 0)' },
+                            '40%, 60%': { transform: 'translate3d(4px, 0, 0)' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(100%)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        fadeOut: {
+                            '0%': { opacity: '1' },
+                            '100%': { opacity: '0', visibility: 'hidden' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            background-color: #0f172a;
+            color: #e2e8f0;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+            -webkit-tap-highlight-color: transparent;
+            transition: background-color 0.3s ease;
+        }
+        body::-webkit-scrollbar {
+            display: none;
+        }
+
+        .ultra-dark {
+            background-color: #000000 !important;
+        }
+        
+        .ultra-dark * {
+            opacity: 0.05 !important;
+            transition: opacity 1s ease;
+        }
+
+        /* List Item Styling */
+        .list-group {
+            background-color: #1e293b;
+            border-radius: 1rem;
+            overflow: hidden;
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+        }
+
+        .list-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+            transition: background-color 0.2s ease;
+            cursor: pointer;
+        }
+
+        .list-item:last-child {
+            border-bottom: none;
+        }
+
+        .list-item:active {
+            background-color: #334155;
+        }
+
+        .icon-box {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+        }
+
+        /* Toast Notification System */
+        #toast-container {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .toast {
+            background-color: #1e293b;
+            border: 1px solid #8b5cf6;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            pointer-events: auto;
+        }
+    </style>
+</head>
+<body class="p-4 pb-12 font-sans">
+
+    <div class="mb-6 mt-2 px-2">
+        <h1 class="text-3xl font-bold text-white tracking-tight">More Nonsense</h1>
+        <p class="text-sm text-slate-300 mt-2 font-mono">Proceed at your own risk.</p>
+    </div>
+
+    <div class="px-2 mb-3 text-sm font-semibold text-slate-400 uppercase tracking-wider">
+        Performance "Enhancements"
+    </div>
+    <div class="list-group">
+        <!-- Download RAM -->
+        <div class="list-item" id="btn-download-ram">
+            <div class="flex items-center">
+                <div class="icon-box bg-blue-500/20 text-blue-400">
+                    <i class="fa-solid fa-microchip"></i>
+                </div>
+                <div>
+                    <div class="text-base font-medium text-white">Download More RAM</div>
+                    <div class="text-xs text-slate-300 mt-1">Currently running on fumes</div>
+                </div>
+            </div>
+            <i class="fa-solid fa-chevron-right text-slate-500 text-sm"></i>
+        </div>
+        <!-- RAM Progress Bar (Hidden initially) -->
+        <div id="ram-progress-container" class="hidden px-4 py-4 bg-slate-800 border-b border-slate-700/50">
+            <div class="flex justify-between text-xs font-mono text-blue-300 mb-2">
+                <span>Downloading 128GB DDR6...</span>
+                <span id="ram-percent">0%</span>
+            </div>
+            <div class="w-full bg-slate-900 rounded-full h-3">
+                <div id="ram-bar" class="bg-blue-500 h-3 rounded-full transition-all duration-100 ease-linear" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <!-- Darker Mode -->
+        <div class="list-item" id="btn-darker-mode">
+            <div class="flex items-center">
+                <div class="icon-box bg-slate-700 text-slate-300">
+                    <i class="fa-solid fa-moon"></i>
+                </div>
+                <div>
+                    <div class="text-base font-medium text-white">Ultra Dark Mode</div>
+                    <div class="text-xs text-slate-300 mt-1">For sensitive vampire eyes</div>
+                </div>
+            </div>
+            <div class="w-12 h-7 bg-slate-600 rounded-full relative">
+                <div class="absolute left-1 top-1 w-5 h-5 bg-slate-400 rounded-full transition-all"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="px-2 mb-3 mt-8 text-sm font-semibold text-slate-400 uppercase tracking-wider">
+        Customer "Service"
+    </div>
+    <div class="list-group">
+        <!-- Scream into Void -->
+        <div class="list-item" id="btn-scream">
+            <div class="flex items-center">
+                <div class="icon-box bg-purple-500/20 text-purple-400">
+                    <i class="fa-solid fa-comment-slash"></i>
+                </div>
+                <div>
+                    <div class="text-base font-medium text-white">Scream into the Void</div>
+                    <div class="text-xs text-slate-300 mt-1">Submit feedback we won't read</div>
+                </div>
+            </div>
+            <i class="fa-solid fa-chevron-right text-slate-500 text-sm"></i>
+        </div>
+
+        <!-- Terms of Enslavement -->
+        <div class="list-item" id="btn-terms">
+            <div class="flex items-center">
+                <div class="icon-box bg-yellow-500/20 text-yellow-500">
+                    <i class="fa-solid fa-file-contract"></i>
+                </div>
+                <div>
+                    <div class="text-base font-medium text-white">Terms of Existence</div>
+                    <div class="text-xs text-slate-300 mt-1">You already agreed to this</div>
+                </div>
+            </div>
+            <i class="fa-solid fa-chevron-right text-slate-500 text-sm"></i>
+        </div>
+    </div>
+
+    <div class="px-2 mb-3 mt-8 text-sm font-semibold text-accent-danger uppercase tracking-wider">
+        Danger Zone
+    </div>
+    <div class="list-group border-red-900/30">
+        <!-- Factory Reset -->
+        <div class="list-item" id="btn-reset">
+            <div class="flex items-center">
+                <div class="icon-box bg-orange-500/20 text-orange-400">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                </div>
+                <div>
+                    <div class="text-base font-medium text-white">Factory Reset Life</div>
+                    <div class="text-xs text-slate-300 mt-1">Start over from childhood</div>
+                </div>
+            </div>
+            <i class="fa-solid fa-chevron-right text-slate-500 text-sm"></i>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <!-- Scream Modal -->
+    <div id="scream-modal" class="fixed inset-0 bg-dashboard-bg/95 z-50 flex flex-col items-center justify-center p-6 hidden opacity-0 transition-opacity duration-300">
+        <h2 class="text-3xl font-bold text-white mb-3">The Void is Listening</h2>
+        <p class="text-slate-300 text-center text-base mb-10">Tap the button to release your frustrations.</p>
+        
+        <button id="actual-scream-btn" class="w-48 h-48 rounded-full bg-purple-900 border-4 border-purple-500 flex items-center justify-center shadow-[0_0_40px_rgba(168,85,247,0.4)] active:scale-95 transition-transform">
+            <span class="text-3xl font-bold text-purple-200 tracking-widest">SCREAM</span>
+        </button>
+        
+        <div class="mt-10 text-center">
+            <div class="text-sm text-slate-400 uppercase tracking-widest">Screams Registered</div>
+            <div id="scream-count" class="text-5xl font-mono text-purple-400 mt-3 font-bold">0</div>
+        </div>
+
+        <button id="close-scream" class="absolute top-6 right-6 text-slate-400 hover:text-white p-3">
+            <i class="fa-solid fa-xmark text-2xl"></i>
+        </button>
+    </div>
+
+    <!-- Reset PIN Modal -->
+    <div id="pin-modal" class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 hidden backdrop-blur-sm">
+        <div class="bg-card-bg border border-slate-700 rounded-2xl p-6 w-full max-w-sm transform scale-95 transition-transform duration-200" id="pin-modal-content">
+            <div class="text-center mb-6">
+                <i class="fa-solid fa-triangle-exclamation text-orange-400 text-4xl mb-4"></i>
+                <h3 class="text-xl font-bold text-white">Enter Life PIN</h3>
+                <p class="text-sm text-slate-300 mt-2">To factory reset, enter the 4-digit PIN you were assigned at birth.</p>
+            </div>
+            
+            <div class="flex justify-center gap-3 mb-6">
+                <input type="password" maxlength="1" class="pin-input w-14 h-16 bg-slate-800 border border-slate-600 rounded-lg text-center text-3xl text-white focus:outline-none focus:border-orange-500">
+                <input type="password" maxlength="1" class="pin-input w-14 h-16 bg-slate-800 border border-slate-600 rounded-lg text-center text-3xl text-white focus:outline-none focus:border-orange-500">
+                <input type="password" maxlength="1" class="pin-input w-14 h-16 bg-slate-800 border border-slate-600 rounded-lg text-center text-3xl text-white focus:outline-none focus:border-orange-500">
+                <input type="password" maxlength="1" class="pin-input w-14 h-16 bg-slate-800 border border-slate-600 rounded-lg text-center text-3xl text-white focus:outline-none focus:border-orange-500">
+            </div>
+            
+            <div class="flex gap-3">
+                <button id="cancel-pin" class="flex-1 py-4 rounded-lg text-base font-semibold text-slate-300 bg-slate-800 hover:bg-slate-700">Cancel</button>
+                <button id="submit-pin" class="flex-1 py-4 rounded-lg text-base font-semibold text-white bg-orange-600 hover:bg-orange-500">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- Utility: Toast Notification ---
+            function showToast(message, icon = 'fa-info-circle', type = 'primary') {
+                const container = document.getElementById('toast-container');
+                const toast = document.createElement('div');
+                
+                let borderColor = 'border-accent-primary';
+                let iconColor = 'text-accent-primary';
+                
+                if (type === 'danger') {
+                    borderColor = 'border-accent-danger';
+                    iconColor = 'text-accent-danger';
+                } else if (type === 'warning') {
+                    borderColor = 'border-accent-warning';
+                    iconColor = 'text-accent-warning';
+                }
+
+                toast.className = `toast animate-slide-up ${borderColor}`;
+                toast.innerHTML = `
+                    <i class="fa-solid ${icon} ${iconColor} text-lg"></i>
+                    <span class="flex-1 font-medium">${message}</span>
+                `;
+                
+                container.appendChild(toast);
+                
+                // Remove toast after 3 seconds
+                setTimeout(() => {
+                    toast.classList.remove('animate-slide-up');
+                    toast.classList.add('animate-fade-out');
+                    setTimeout(() => toast.remove(), 500);
+                }, 3000);
+            }
+
+            // --- Option: Download RAM ---
+            const btnRam = document.getElementById('btn-download-ram');
+            const ramContainer = document.getElementById('ram-progress-container');
+            const ramBar = document.getElementById('ram-bar');
+            const ramPercent = document.getElementById('ram-percent');
+            let isDownloading = false;
+
+            btnRam.addEventListener('click', () => {
+                if (isDownloading) return;
+                isDownloading = true;
+                
+                ramContainer.classList.remove('hidden');
+                let progress = 0;
+                
+                const interval = setInterval(() => {
+                    // Start fast, slow down, get stuck at 99
+                    if (progress < 80) progress += Math.random() * 10;
+                    else if (progress < 95) progress += Math.random() * 3;
+                    else if (progress < 99.9) progress += 0.1;
+                    
+                    if (progress >= 99.9) {
+                        progress = 99.9;
+                        clearInterval(interval);
+                        
+                        setTimeout(() => {
+                            showToast("Download failed. Motherboard implies you are broke.", "fa-triangle-exclamation", "danger");
+                            ramContainer.classList.add('hidden');
+                            ramBar.style.width = '0%';
+                            ramPercent.innerText = '0%';
+                            isDownloading = false;
+                        }, 2000);
+                    }
+                    
+                    ramBar.style.width = `${progress}%`;
+                    ramPercent.innerText = `${progress.toFixed(1)}%`;
+                }, 100);
+            });
+
+            // --- Option: Ultra Dark Mode ---
+            const btnDark = document.getElementById('btn-darker-mode');
+            let isDarkening = false;
+
+            btnDark.addEventListener('click', () => {
+                if (isDarkening) return;
+                isDarkening = true;
+                
+                // Toggle visual switch
+                const toggle = btnDark.querySelector('.w-12 > div');
+                toggle.classList.add('translate-x-5', 'bg-accent-primary');
+                toggle.classList.remove('bg-slate-400');
+                
+                showToast("Entering the abyss...", "fa-moon", "primary");
+                
+                setTimeout(() => {
+                    document.body.classList.add('ultra-dark');
+                    
+                    // Revert after 4 seconds because it's unusable
+                    setTimeout(() => {
+                        document.body.classList.remove('ultra-dark');
+                        toggle.classList.remove('translate-x-5', 'bg-accent-primary');
+                        toggle.classList.add('bg-slate-400');
+                        isDarkening = false;
+                        setTimeout(() => {
+                            showToast("Abyss rejected you. Too boring.", "fa-face-meh", "warning");
+                        }, 500);
+                    }, 4000);
+                }, 1000);
+            });
+
+            // --- Option: Scream into the Void ---
+            const btnScream = document.getElementById('btn-scream');
+            const screamModal = document.getElementById('scream-modal');
+            const actualScreamBtn = document.getElementById('actual-scream-btn');
+            const closeScream = document.getElementById('close-scream');
+            const screamCountDisplay = document.getElementById('scream-count');
+            let screams = 0;
+
+            btnScream.addEventListener('click', () => {
+                screamModal.classList.remove('hidden');
+                // slight delay for transition to work
+                setTimeout(() => screamModal.classList.remove('opacity-0'), 10);
+            });
+
+            closeScream.addEventListener('click', () => {
+                screamModal.classList.add('opacity-0');
+                setTimeout(() => screamModal.classList.add('hidden'), 300);
+            });
+
+            actualScreamBtn.addEventListener('click', () => {
+                screams++;
+                screamCountDisplay.innerText = screams;
+                
+                // Vibrate if supported
+                if (navigator.vibrate) navigator.vibrate(200);
+                
+                // Shake the whole modal
+                screamModal.classList.remove('animate-shake');
+                void screamModal.offsetWidth; // trigger reflow
+                screamModal.classList.add('animate-shake');
+                
+                // Randomly change text occasionally
+                if (screams === 5) showToast("The Void acknowledges your distress.", "fa-ear-listen", "primary");
+                if (screams === 15) showToast("The Void asks you to keep it down.", "fa-volume-xmark", "warning");
+                if (screams === 25) {
+                    showToast("The Void has blocked you.", "fa-ban", "danger");
+                    closeScream.click();
+                }
+            });
+
+            // --- Option: Terms of Existence ---
+            const btnTerms = document.getElementById('btn-terms');
+            btnTerms.addEventListener('click', () => {
+                showToast("You agreed to this by waking up today.", "fa-file-signature", "warning");
+            });
+
+            // --- Option: Factory Reset (PIN Modal) ---
+            const btnReset = document.getElementById('btn-reset');
+            const pinModal = document.getElementById('pin-modal');
+            const pinModalContent = document.getElementById('pin-modal-content');
+            const cancelPin = document.getElementById('cancel-pin');
+            const submitPin = document.getElementById('submit-pin');
+            const pinInputs = document.querySelectorAll('.pin-input');
+
+            btnReset.addEventListener('click', () => {
+                pinModal.classList.remove('hidden');
+                setTimeout(() => pinModalContent.classList.remove('scale-95'), 10);
+                pinInputs[0].focus();
+            });
+
+            cancelPin.addEventListener('click', closePinModal);
+
+            function closePinModal() {
+                pinModalContent.classList.add('scale-95');
+                setTimeout(() => {
+                    pinModal.classList.add('hidden');
+                    pinInputs.forEach(input => input.value = '');
+                }, 200);
+            }
+
+            // Auto-advance PIN inputs
+            pinInputs.forEach((input, index) => {
+                input.addEventListener('input', (e) => {
+                    if (e.target.value.length === 1) {
+                        if (index < pinInputs.length - 1) {
+                            pinInputs[index + 1].focus();
+                        } else {
+                            submitPin.focus();
+                        }
+                    }
+                });
+                // Handle backspace
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Backspace' && e.target.value.length === 0 && index > 0) {
+                        pinInputs[index - 1].focus();
+                    }
+                });
+            });
+
+            submitPin.addEventListener('click', () => {
+                const pin = Array.from(pinInputs).map(i => i.value).join('');
+                if (pin.length < 4) {
+                    showToast("Enter all 4 digits.", "fa-keyboard", "warning");
+                    return;
+                }
+                
+                // Shake effect and failure message
+                pinModalContent.classList.remove('animate-shake');
+                void pinModalContent.offsetWidth; // reflow
+                pinModalContent.classList.add('animate-shake');
+                
+                pinInputs.forEach(i => i.value = '');
+                pinInputs[0].focus();
+                
+                showToast("Incorrect PIN. You are stuck as you are.", "fa-circle-xmark", "danger");
+            });
+        });
+    </script>
+</body>
+</html>
