@@ -34,7 +34,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@300;400;500;600;700&display=swap');
         
         body {
-            background-color: theme('colors.dashboard-bg');
+            background-color: #0f172a;
             color: #e2e8f0;
             -ms-overflow-style: none;
             scrollbar-width: none;
@@ -46,12 +46,12 @@
 
         .search-input:focus {
             outline: none;
-            box-shadow: 0 0 0 2px theme('colors.accent-primary/50');
+            box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.5);
         }
 
         /* Loading Skeleton Animation */
         .skeleton {
-            background: linear-gradient(90deg, theme('colors.card-bg') 25%, #334155 50%, theme('colors.card-bg') 75%);
+            background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
             background-size: 200% 100%;
             animation: loading-skeleton 1.5s infinite;
         }
@@ -59,6 +59,66 @@
         @keyframes loading-skeleton {
             0% { background-position: 200% 0; }
             100% { background-position: -200% 0; }
+        }
+
+        /* Glitch Title Effects */
+        .glitch-title {
+            position: relative;
+            display: inline-block;
+        }
+        .glitch-title::before, .glitch-title::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0f172a; /* matches body bg to hide underlying text */
+        }
+        .glitch-title::before {
+            left: 2px;
+            text-shadow: -2px 0 #ef4444; /* red */
+            animation: glitch-anim 4s infinite linear alternate-reverse;
+        }
+        .glitch-title::after {
+            left: -2px;
+            text-shadow: -2px 0 #8b5cf6; /* purple */
+            animation: glitch-anim2 4s infinite linear alternate-reverse;
+        }
+        @keyframes glitch-anim {
+            0% { clip: rect(7px, 9999px, 20px, 0); transform: translate(0); }
+            10% { clip: rect(15px, 9999px, 2px, 0); transform: translate(-2px, 1px); }
+            20% { clip: rect(2px, 9999px, 22px, 0); transform: translate(2px, -1px); }
+            30% { clip: rect(28px, 9999px, 8px, 0); transform: translate(0); }
+            40% { clip: rect(11px, 9999px, 25px, 0); transform: translate(1px, 2px); }
+            50% { clip: rect(22px, 9999px, 5px, 0); transform: translate(-1px, -2px); }
+            60% { clip: rect(5px, 9999px, 28px, 0); transform: translate(0); }
+            70% { clip: rect(18px, 9999px, 12px, 0); transform: translate(2px, 1px); }
+            80% { clip: rect(9px, 9999px, 18px, 0); transform: translate(-2px, -1px); }
+            90% { clip: rect(25px, 9999px, 3px, 0); transform: translate(0); }
+            100% { clip: rect(1px, 9999px, 29px, 0); transform: translate(1px, -2px); }
+        }
+        @keyframes glitch-anim2 {
+            0% { clip: rect(29px, 9999px, 5px, 0); transform: translate(0); }
+            10% { clip: rect(3px, 9999px, 22px, 0); transform: translate(2px, -1px); }
+            20% { clip: rect(18px, 9999px, 8px, 0); transform: translate(-2px, 1px); }
+            30% { clip: rect(8px, 9999px, 26px, 0); transform: translate(0); }
+            40% { clip: rect(25px, 9999px, 12px, 0); transform: translate(-1px, -2px); }
+            50% { clip: rect(12px, 9999px, 29px, 0); transform: translate(1px, 2px); }
+            60% { clip: rect(2px, 9999px, 15px, 0); transform: translate(0); }
+            70% { clip: rect(20px, 9999px, 3px, 0); transform: translate(-2px, -1px); }
+            80% { clip: rect(15px, 9999px, 21px, 0); transform: translate(2px, 1px); }
+            90% { clip: rect(5px, 9999px, 28px, 0); transform: translate(0); }
+            100% { clip: rect(26px, 9999px, 7px, 0); transform: translate(-1px, 2px); }
+        }
+
+        /* Broken Flicker for Subtitle */
+        .flicker-text {
+            animation: broken-flicker 3s infinite;
+        }
+        @keyframes broken-flicker {
+            0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% { opacity: 1; }
+            20%, 21.999%, 63%, 63.999%, 65%, 69.999% { opacity: 0.2; }
         }
     </style>
 </head>
@@ -71,8 +131,8 @@
             <i class="fa-solid fa-magnifying-glass-chart text-4xl text-accent-primary relative z-10 animate-bounce" style="animation-duration: 2s;"></i>
             <i class="fa-solid fa-ban text-accent-danger text-2xl absolute -bottom-2 -right-2 z-20 transform rotate-12"></i>
         </div>
-        <h1 class="text-2xl font-bold text-white tracking-tight">Vōid Search</h1>
-        <p class="text-xs text-slate-400 mt-1 font-mono">We probably don't have it.</p>
+        <h1 class="text-2xl font-bold text-white tracking-tight glitch-title" data-text="Vōid Search">Vōid Search</h1>
+        <p class="text-xs text-slate-400 mt-1 font-mono flicker-text">We probably don't have it.</p>
     </div>
 
     <!-- Search Box Area -->
