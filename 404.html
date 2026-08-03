@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coming Soon</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400&display=swap');
+
+        :root {
+            --color-stroke: #94a3b8; /* Slate-400 */
+            --bg-color: #ffffff;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            font-family: 'Inter', sans-serif;
+            color: #475569;
+        }
+
+        .wheel-wrapper {
+            position: relative;
+            width: 200px;
+            height: 260px; /* Increased to fit A-frame */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* The Support Structure */
+        .support {
+            position: absolute;
+            top: 50%; /* Start from center of wheel */
+            left: 0;
+            width: 100%;
+            height: 100px;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+        }
+
+        .leg {
+            position: absolute;
+            top: 0;
+            width: 2px;
+            height: 100px; /* Shortened legs */
+            background-color: var(--color-stroke);
+            transform-origin: top center; /* Meet at the top (center of wheel) */
+        }
+
+        .leg.left {
+            transform: rotate(25deg); /* Angle outwards to the left */
+        }
+
+        .leg.right {
+            transform: rotate(-25deg); /* Angle outwards to the right */
+        }
+
+        .wheel {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            border: 2px solid var(--color-stroke);
+            border-radius: 50%;
+            animation: spin 10s linear infinite;
+            z-index: 20; 
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Spokes */
+        .spoke {
+            position: absolute;
+            top: 50%;
+            left: 0; 
+            width: 100%;
+            height: 2px;
+            background-color: var(--color-stroke);
+            margin-top: -1px; 
+        }
+
+        .cabin {
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            background-color: var(--bg-color);
+            border: 2px solid var(--color-stroke);
+            border-radius: 50%;
+            top: 50%;
+            left: -7px; /* Center perfectly on the rim */
+            transform: translateY(-50%); 
+        }
+        
+        .cabin.right {
+            left: auto;
+            right: -7px; /* Center perfectly on the rim */
+        }
+
+        .dots::after {
+            content: '...';
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen">
+
+    <div class="wheel-wrapper">
+        <div class="support">
+            <div class="leg left"></div>
+            <div class="leg right"></div>
+        </div>
+        
+        <div class="wheel">
+            <!-- Spokes crossing the center -->
+            <div class="spoke" style="transform: rotate(0deg)">
+                <div class="cabin"></div>
+                <div class="cabin right"></div>
+            </div>
+            <div class="spoke" style="transform: rotate(45deg)">
+                <div class="cabin"></div>
+                <div class="cabin right"></div>
+            </div>
+            <div class="spoke" style="transform: rotate(90deg)">
+                <div class="cabin"></div>
+                <div class="cabin right"></div>
+            </div>
+            <div class="spoke" style="transform: rotate(135deg)">
+                <div class="cabin"></div>
+                <div class="cabin right"></div>
+            </div>
+        </div>
+    </div>
+
+    <h1 class="mt-20 text-lg uppercase tracking-widest text-slate-500">
+        Coming Soon<span class="dots"></span>
+    </h1>
+    <h1 class="mt-20 text-lg uppercase tracking-widest text-slate-500">
+        Please Use The Demo Account.
+    </h1>
+
+</body>
+</html>
