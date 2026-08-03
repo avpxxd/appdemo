@@ -1,1 +1,393 @@
-<p>Logged Into Demonstration Dashboard Sucessfully.</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absurdity OS Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'dashboard-bg': '#0f172a',
+                        'card-bg': '#1e293b',
+                        'accent-primary': '#8b5cf6',
+                        'accent-secondary': '#10b981',
+                        'accent-warning': '#f59e0b',
+                        'accent-danger': '#ef4444',
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'sans-serif'],
+                        'mono': ['Fira Code', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@300;400;600;700&display=swap');
+        
+        body {
+            background-color: theme('colors.dashboard-bg');
+            color: #e2e8f0;
+            /* Hide scrollbar for cleaner look in webview */
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+        body::-webkit-scrollbar {
+            display: none;
+        }
+
+        .pulse-text {
+            animation: pulse-opacity 2s infinite;
+        }
+
+        @keyframes pulse-opacity {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .spin-slow {
+            animation: spin 8s linear infinite;
+        }
+
+        .metric-card {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s ease-in-out;
+        }
+        
+        .metric-card:active {
+            transform: scale(0.98);
+        }
+
+        /* Glitch effect for critical warnings */
+        .glitch {
+            position: relative;
+        }
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: theme('colors.card-bg');
+        }
+        .glitch::before {
+            left: 2px;
+            text-shadow: -2px 0 theme('colors.accent-danger');
+            clip: rect(24px, 550px, 90px, 0);
+            animation: glitch-anim-2 3s infinite linear alternate-reverse;
+        }
+        .glitch::after {
+            left: -2px;
+            text-shadow: -2px 0 theme('colors.accent-primary');
+            clip: rect(85px, 550px, 140px, 0);
+            animation: glitch-anim 2.5s infinite linear alternate-reverse;
+        }
+        @keyframes glitch-anim {
+            0% { clip: rect(10px, 9999px, 83px, 0); }
+            20% { clip: rect(61px, 9999px, 20px, 0); }
+            40% { clip: rect(4px, 9999px, 94px, 0); }
+            60% { clip: rect(98px, 9999px, 48px, 0); }
+            80% { clip: rect(25px, 9999px, 33px, 0); }
+            100% { clip: rect(77px, 9999px, 81px, 0); }
+        }
+        @keyframes glitch-anim-2 {
+            0% { clip: rect(65px, 9999px, 100px, 0); }
+            20% { clip: rect(3px, 9999px, 78px, 0); }
+            40% { clip: rect(98px, 9999px, 12px, 0); }
+            60% { clip: rect(42px, 9999px, 54px, 0); }
+            80% { clip: rect(19px, 9999px, 85px, 0); }
+            100% { clip: rect(88px, 9999px, 32px, 0); }
+        }
+    </style>
+</head>
+<body class="p-4 space-y-4 font-sans font-medium text-sm sm:text-base">
+
+    <!-- Status Bar Area (Fake) -->
+    <div class="flex justify-between items-center mb-6 pb-2 border-b border-slate-700">
+        <div class="flex items-center space-x-2">
+            <i class="fa-solid fa-satellite-dish text-accent-secondary pulse-text text-lg"></i>
+            <span class="text-xs text-slate-400 uppercase tracking-wider font-mono">Syncing to the Void</span>
+        </div>
+        <div class="text-xs text-slate-400 font-mono" id="fake-time">14:02:59 ERROR</div>
+    </div>
+
+    <!-- Top Metrics Grid -->
+    <div class="grid grid-cols-2 gap-3">
+        <!-- Motivation Level -->
+        <div class="metric-card bg-card-bg rounded-xl p-4 flex flex-col justify-between border border-slate-700/50 relative overflow-hidden">
+            <div class="absolute -right-4 -top-4 text-slate-600/20">
+                <i class="fa-solid fa-battery-quarter text-6xl"></i>
+            </div>
+            <div class="text-slate-400 text-xs uppercase tracking-wide mb-1 flex items-center gap-2">
+                <i class="fa-solid fa-couch text-accent-primary"></i> Motivation
+            </div>
+            <div class="text-3xl font-bold text-white mb-1" id="motivation-value">12%</div>
+            <div class="text-xs text-accent-danger flex items-center">
+                <i class="fa-solid fa-arrow-down mr-1"></i> steadily declining
+            </div>
+        </div>
+
+        <!-- Coffees Consumed -->
+        <div class="metric-card bg-card-bg rounded-xl p-4 flex flex-col justify-between border border-slate-700/50 relative overflow-hidden">
+            <div class="absolute -right-2 -bottom-2 text-slate-600/20">
+                <i class="fa-solid fa-mug-hot text-6xl"></i>
+            </div>
+            <div class="text-slate-400 text-xs uppercase tracking-wide mb-1 flex items-center gap-2">
+                <i class="fa-solid fa-mug-hot text-accent-secondary"></i> Coffee Intake
+            </div>
+            <div class="text-3xl font-bold text-white mb-1">8.5<span class="text-sm font-normal text-slate-400">c</span></div>
+            <div class="text-xs text-accent-secondary flex items-center">
+                <i class="fa-solid fa-arrow-up mr-1"></i> nearing heart palpitations
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Chart: Productivity vs Existential Dread -->
+    <div class="metric-card bg-card-bg rounded-xl p-4 border border-slate-700/50 mt-4">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-slate-300 text-sm uppercase tracking-wide">Productivity vs. Existential Dread</h3>
+            <i class="fa-solid fa-chart-line text-slate-500"></i>
+        </div>
+        <div class="h-48 w-full relative">
+            <canvas id="dreadChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Middle Row Widgets -->
+    <div class="grid grid-cols-1 gap-4 mt-4">
+        
+        <!-- Imposter Syndrome Meter -->
+        <div class="metric-card bg-card-bg rounded-xl p-4 border border-slate-700/50">
+             <div class="text-slate-400 text-xs uppercase tracking-wide mb-3 flex justify-between items-center">
+                <span><i class="fa-solid fa-mask text-accent-warning mr-2"></i>Imposter Syndrome Level</span>
+                <span class="text-accent-warning font-bold pulse-text">MAX</span>
+            </div>
+            <!-- Fake Progress Bar -->
+            <div class="w-full bg-slate-800 rounded-full h-3 mb-2 overflow-hidden border border-slate-700">
+                <div class="bg-gradient-to-r from-accent-warning to-accent-danger h-3 rounded-full" style="width: 98%;"></div>
+            </div>
+            <div class="flex justify-between text-[10px] text-slate-500 font-mono">
+                <span>Mild Fraud</span>
+                <span>Complete Phony</span>
+            </div>
+        </div>
+
+        <!-- Surviving Brain Cells -->
+        <div class="metric-card bg-card-bg rounded-xl p-4 border border-slate-700/50 flex items-center justify-between">
+            <div>
+                <div class="text-slate-400 text-xs uppercase tracking-wide mb-1">
+                    <i class="fa-solid fa-brain text-pink-500 mr-2"></i>Surviving Brain Cells
+                </div>
+                <div class="text-2xl font-bold text-white font-mono" id="brain-cells">2</div>
+                <div class="text-xs text-slate-500 mt-1">Fighting for 3rd place</div>
+            </div>
+            <div class="h-12 w-12 rounded-full bg-slate-800 flex items-center justify-center border-2 border-pink-500/30">
+                <i class="fa-solid fa-gear text-pink-500 text-xl spin-slow"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Current "Tasks" List -->
+    <div class="metric-card bg-card-bg rounded-xl p-4 border border-slate-700/50 mt-4">
+        <h3 class="text-slate-300 text-sm uppercase tracking-wide mb-4 border-b border-slate-700 pb-2">
+            <i class="fa-solid fa-list-check text-blue-400 mr-2"></i>Current Background Tasks
+        </h3>
+        <ul class="space-y-3">
+            <li class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="h-2 w-2 rounded-full bg-accent-secondary pulse-text"></div>
+                    <span class="text-sm">Overthinking an email from 2019</span>
+                </div>
+                <span class="text-xs font-mono text-slate-500">99%</span>
+            </li>
+            <li class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="h-2 w-2 rounded-full bg-accent-warning"></div>
+                    <span class="text-sm">Pretending to work</span>
+                </div>
+                <span class="text-xs font-mono text-slate-500">Active</span>
+            </li>
+            <li class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="h-2 w-2 rounded-full bg-accent-danger"></div>
+                    <span class="text-sm line-through text-slate-500">Finding will to live</span>
+                </div>
+                <span class="text-xs font-mono text-accent-danger">FAILED</span>
+            </li>
+            <li class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-spinner fa-spin text-accent-primary text-[10px]"></i>
+                    <span class="text-sm">Processing sarcastic remark</span>
+                </div>
+                <span class="text-xs font-mono text-slate-500">Buffering...</span>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Fake System Alert -->
+    <div class="mt-4 mb-8 bg-red-950/80 border-2 border-red-500 rounded-xl p-4 flex items-start gap-3 shadow-[0_0_15px_rgba(239,68,68,0.3)]">
+        <i class="fa-solid fa-triangle-exclamation text-red-400 mt-1 pulse-text text-xl"></i>
+        <div>
+            <h4 class="text-red-300 font-bold text-sm tracking-wide mb-1" style="text-shadow: 0 0 5px rgba(239,68,68,0.5);">CRITICAL SYSTEM FAILURE</h4>
+            <p class="text-xs text-red-100 mt-1 leading-relaxed font-medium">
+                User has realized it is only Tuesday. Emergency snacks required immediately to prevent complete core meltdown.
+            </p>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // 1. Fake Clock that is slightly wrong
+            const timeEl = document.getElementById('fake-time');
+            setInterval(() => {
+                const now = new Date();
+                // Add a random offset between -5 and +5 minutes to make it unhelpful
+                const offset = Math.floor(Math.random() * 10) - 5; 
+                now.setMinutes(now.getMinutes() + offset);
+                
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+                
+                // Occasionally glitch the time
+                if(Math.random() > 0.95) {
+                    timeEl.innerText = "??:??:?? ERR";
+                    timeEl.classList.add('text-accent-danger');
+                } else {
+                    timeEl.innerText = `${hours}:${minutes}:${seconds} (ish)`;
+                    timeEl.classList.remove('text-accent-danger');
+                }
+            }, 1000);
+
+            // 2. Fluctuating Motivation
+            const motivationEl = document.getElementById('motivation-value');
+            let currentMotivation = 12;
+            setInterval(() => {
+                // Motivation generally trends down, rarely goes up
+                const change = Math.random() > 0.8 ? (Math.random() * 5) : -(Math.random() * 3);
+                currentMotivation = Math.max(0, Math.min(100, currentMotivation + change));
+                motivationEl.innerText = `${currentMotivation.toFixed(1)}%`;
+                
+                // Color code it based on how bad it is
+                if(currentMotivation < 10) {
+                    motivationEl.className = 'text-3xl font-bold mb-1 text-accent-danger';
+                } else if (currentMotivation < 30) {
+                     motivationEl.className = 'text-3xl font-bold mb-1 text-accent-warning';
+                } else {
+                     motivationEl.className = 'text-3xl font-bold mb-1 text-white';
+                }
+            }, 3000);
+
+            // 3. Chart.js: Productivity vs Existential Dread
+            const ctx = document.getElementById('dreadChart').getContext('2d');
+            
+            // Generate some spiky, non-sensical data
+            const labels = ['9AM', '10AM', '11AM', '12PM', '1PM', '2PM', '3PM'];
+            const productivityData = [40, 60, 20, 5, 45, 15, 2];
+            const dreadData = [10, 25, 60, 90, 50, 85, 100];
+
+            // Gradient for dread line
+            const dreadGradient = ctx.createLinearGradient(0, 0, 0, 200);
+            dreadGradient.addColorStop(0, 'rgba(239, 68, 68, 0.5)'); // Red
+            dreadGradient.addColorStop(1, 'rgba(239, 68, 68, 0.0)');
+
+            const myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Productivity',
+                            data: productivityData,
+                            borderColor: '#10b981', // green
+                            backgroundColor: 'transparent',
+                            borderWidth: 2,
+                            tension: 0.4,
+                            pointRadius: 0
+                        },
+                        {
+                            label: 'Existential Dread',
+                            data: dreadData,
+                            borderColor: '#ef4444', // red
+                            backgroundColor: dreadGradient,
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 2,
+                            pointBackgroundColor: '#ef4444'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'bottom',
+                            labels: {
+                                color: '#94a3b8',
+                                boxWidth: 12,
+                                font: { size: 10 }
+                            }
+                        },
+                        tooltip: {
+                            enabled: false // Disable tooltips for cleaner look
+                        }
+                    },
+                    scales: {
+                        y: {
+                            display: false, // Hide Y axis completely
+                            beginAtZero: true
+                        },
+                        x: {
+                            grid: {
+                                display: false,
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: '#64748b',
+                                font: { size: 10 }
+                            }
+                        }
+                    },
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                }
+            });
+
+            // Animate chart to make it look "live"
+            setInterval(() => {
+                // Shift data left
+                productivityData.shift();
+                dreadData.shift();
+                
+                // Add new random data point
+                productivityData.push(Math.random() * 50);
+                
+                // Dread always trends upwards eventually
+                const lastDread = dreadData[dreadData.length - 1] || 50;
+                dreadData.push(Math.min(100, lastDread + (Math.random() * 20 - 5)));
+
+                myChart.update('none'); // Update without full animation for smoother feel
+            }, 4000);
+
+            // 4. Brain Cells bouncing between 1 and 2
+            const brainCellsEl = document.getElementById('brain-cells');
+            setInterval(() => {
+                brainCellsEl.innerText = Math.random() > 0.7 ? "1" : "2";
+            }, 5000);
+        });
+    </script>
+</body>
+</html>
